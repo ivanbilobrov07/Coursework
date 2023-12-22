@@ -112,7 +112,7 @@ namespace PL
             }
         }
 
-        static protected int getUserIndexFromList(string askMessage, string[] values)
+        static public int getUserIndexFromList(string askMessage, string[] values)
         {
             Console.WriteLine(askMessage);
 
@@ -324,7 +324,7 @@ namespace PL
     {
         public static AdminActions defineAction()
         {
-            string[] actions = { "Add a new customer", "Add new real estate", "Delete a customer", "Delete real estate", "Print all customers", "Print all real estate", "Choose another console menu", "Choose another type of serialization", "Exit" };
+            string[] actions = { "Add a new customer", "Add new real estate", "Delete a customer", "Delete real estate", "Print all customers", "Print all real estate", "Search by keyword", "Choose another console menu", "Choose another type of serialization", "Exit" };
             int actionIndex = getUserIndexFromList("Choose an action, you want to do: ", actions);
 
             switch (actionIndex)
@@ -335,11 +335,28 @@ namespace PL
                 case 3: return AdminActions.RemoveRealEstate;
                 case 4: return AdminActions.PrintCustomers;
                 case 5: return AdminActions.PrintRealEstate;
-                case 6: return AdminActions.ChangeConsole;
-                case 7: return AdminActions.Restart;
-                case 8: return AdminActions.Stop;
+                case 6: return AdminActions.Search;
+                case 7: return AdminActions.ChangeConsole;
+                case 8: return AdminActions.Restart;
+                case 9: return AdminActions.Stop;
                 default: return AdminActions.Stop;
             }
+        }
+
+        public static SearchType defineSearchType()
+        {
+            string[] types = { "Customers", "Real Estate", "All" };
+            int typeIndex = getUserIndexFromList("Choose entities to search : ", types);
+
+            if (typeIndex == 0)
+            {
+                return SearchType.Customers;
+            } else if (typeIndex == 1)
+            {
+                return SearchType.RealEstate;
+            }
+
+            return SearchType.All;
         }
     }
 }

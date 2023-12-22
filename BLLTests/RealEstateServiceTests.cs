@@ -13,11 +13,14 @@ namespace BLL.Tests
     public class RealEstateServiceTests
     {
         RealEstateService? realEstateService;
+        CustomerService? customerService;
 
         public void Setup()
         {
-            realEstateService = new RealEstateService("json");
+            realEstateService = new RealEstateService("json", "testRE");
+            customerService = new CustomerService("json", "testC");
             realEstateService.Clear();
+            customerService.Clear();
         }
 
         [TestMethod()]
@@ -40,37 +43,84 @@ namespace BLL.Tests
         [TestMethod()]
         public void AddRealEstateTest()
         {
-            Assert.Fail();
+            // Arrange
+            Setup();
+            string city = "Kyiv";
+            string address = "Test address";
+            int price = 2220;
+            string[] types = {"3-rooms", "flat" };
+
+            // Act
+            realEstateService.AddRealEstate(city, address, price, types);
+
+            // Assert
+            Assert.AreEqual(realEstateService.DataList.Count(), 1);
+            Assert.AreEqual(realEstateService.DataList[0].City, city);
+            Assert.AreEqual(realEstateService.DataList[0].Address, address);
+            Assert.AreEqual(realEstateService.DataList[0].Price, price);
+            CollectionAssert.AreEqual(realEstateService.DataList[0].Types, new List<RealEstateType> { RealEstateType.ThreeRooms, RealEstateType.Flat} );
         }
 
         [TestMethod()]
         public void RemoveRealEstateTest()
         {
-            Assert.Fail();
-        }
+            // Arrange
+            Setup();
+            string city = "Kyiv";
+            string address = "Test address";
+            int price = 2220;
+            string[] types = { "3-rooms", "flat" };
 
-        [TestMethod()]
-        public void PrintTest()
-        {
-            Assert.Fail();
-        }
+            // Act
+            string addedRealEstate = realEstateService.AddRealEstate(city, address, price, types);
+            Assert.AreEqual(realEstateService.DataList.Count(), 1);
+            string deletedRealEstate =  realEstateService.RemoveRealEstate(realEstateService.DataList[0].Id);
 
-        [TestMethod()]
-        public void PrintTest1()
-        {
-            Assert.Fail();
+            // Assert
+            Assert.AreEqual(realEstateService.DataList.Count(), 0);
+            Assert.AreEqual(addedRealEstate, deletedRealEstate);
         }
 
         [TestMethod()]
         public void GetRealEstateTest()
         {
-            Assert.Fail();
+            // Arrange
+            Setup();
+            string city = "Kyiv";
+            string address = "Test address";
+            int price = 2220;
+            string[] types = { "3-rooms", "flat" };
+
+            // Act
+            realEstateService.AddRealEstate(city, address, price, types);
+
+            // Assert
+            Assert.AreEqual(realEstateService.DataList[0], realEstateService.GetRealEstate(realEstateService.DataList[0].Id));
         }
 
         [TestMethod()]
         public void AddRealEstateToCustomerTest()
         {
-            Assert.Fail();
+            // Arrange
+            Setup();
+            string city = "Kyiv";
+            string address = "Test address";
+            int price = 2220;
+            string[] types = { "3-rooms", "flat" };
+
+            string firsName = "Ivan";
+            string lastName = "Bilobrov";
+            string email = "TestEmail@gmail.test";
+            string bankAccount = "1010101032231234";
+
+            // Act
+            realEstateService.AddRealEstate(city, address, price, types);
+            customerService.AddCustomer(firsName, lastName, email, bankAccount);
+
+            realEstateService.AddRealEstateToCustomer(realEstateService.DataList[0].Id, customerService.DataList[0].Id);
+
+            // Assert
+            Assert.AreEqual(realEstateService.DataList[0].Owner, customerService.DataList[0].Id);
         }
     }
 }

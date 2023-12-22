@@ -11,6 +11,7 @@ namespace PL
         RemoveRealEstate,
         PrintCustomers,
         PrintRealEstate,
+        Search,
         ChangeConsole,
         Restart,
         Stop,
@@ -42,6 +43,12 @@ namespace PL
         AdminConsole,
         UserConsole
     }
+    public enum SearchType
+    {
+        Customers,
+        RealEstate,
+        All,
+    }
 
     internal class Program
     {
@@ -56,9 +63,9 @@ namespace PL
                 typeFlag = true;
                 Console.Clear();
 
-                CustomerService customerService = new CustomerService(type);
-                RealEstateService realEstateService = new RealEstateService(type);
-                UserService userService = new UserService(type);
+                CustomerService customerService = new CustomerService(type, "customers");
+                RealEstateService realEstateService = new RealEstateService(type, "real-estates");
+                UserService userService = new UserService(type, "customers");
 
                 while (typeFlag)
                 {
@@ -168,6 +175,56 @@ namespace PL
                                 case AdminActions.PrintRealEstate:
                                     {
                                         realEstateService.Print();
+
+                                        action = AdminConsole.defineAction();
+                                        break;
+                                    }
+                                case AdminActions.Search:
+                                    {
+                                        SearchType searchType = AdminConsole.defineSearchType();
+
+                                        switch (searchType)
+                                        {
+                                            case SearchType.Customers:
+                                                {
+                                                    customerService.Print();
+                                                    Console.WriteLine("Enter a keyword, which you want to find: ");
+                                                    string keyword = Console.ReadLine();
+                                                    Console.Clear();
+
+                                                    customerService.PrintByQuery(keyword);
+
+                                                    break;
+                                                }
+                                            case SearchType.RealEstate:
+                                                {
+                                                    realEstateService.Print();
+                                                    Console.WriteLine("Enter a keyword, which you want to find: ");
+                                                    string keyword = Console.ReadLine();
+                                                    Console.Clear();
+
+                                                    realEstateService.PrintByQuery(keyword);
+
+                                                    break;
+
+                                                }
+                                            case SearchType.All:
+                                                {
+                                                    customerService.Print();
+                                                    Console.WriteLine();
+                                                    realEstateService.Print();
+                                                    Console.Clear();
+
+                                                    Console.WriteLine("Enter a keyword, which you want to find: ");
+                                                    string keyword = Console.ReadLine();
+
+                                                    customerService.PrintByQuery(keyword);
+                                                    Console.WriteLine();
+                                                    realEstateService.PrintByQuery(keyword);
+
+                                                    break;
+                                                }
+                                        }
 
                                         action = AdminConsole.defineAction();
                                         break;

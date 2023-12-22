@@ -78,7 +78,7 @@ namespace BLL
 
     public class CustomerService : EntitiesService<Customer>
     {
-        public CustomerService(string type) : base(type, "customers")
+        public CustomerService(string type, string fileName) : base(type, fileName)
         { }
 
         public string AddCustomer(string firstName, string lastName, string email, string bankAccount)
@@ -113,7 +113,7 @@ namespace BLL
             return dataList.FirstOrDefault(i => i.Id == inputId)!;
         }
 
-        protected void Print (List<Customer> data)
+        protected void Print(List<Customer> data)
         {
             int index = 0;
 
@@ -121,6 +121,20 @@ namespace BLL
             {
                 Console.WriteLine(index + 1 + ") " + customer.ToString());
                 index++;
+            }
+        }
+
+        public void PrintByQuery(string query)
+        {
+            int index = 0;
+
+            foreach (Customer customer in DataList)
+            {
+                if (customer.ToString().Contains(query))
+                {
+                    Console.WriteLine(index + 1 + ") " + customer.ToString());
+                    index++;
+                }
             }
         }
 
@@ -166,7 +180,7 @@ namespace BLL
 
     public class RealEstateService : EntitiesService<RealEstate>
     {
-        public RealEstateService(string type) : base(type, "real-estates")
+        public RealEstateService(string type, string fileName) : base(type, fileName)
         { }
 
         public List<RealEstateType> convertTypes(string[] types) 
@@ -226,6 +240,20 @@ namespace BLL
             return newRealEstate.ToString();
         }
 
+        public void PrintByQuery(string query)
+        {
+            int index = 0;
+
+            foreach (RealEstate realEstate in DataList)
+            {
+                if (realEstate.ToString().Contains(query))
+                {
+                    Console.WriteLine(index + 1 + ") " + realEstate.ToString());
+                    index++;
+                }
+            }
+        }
+
         public List<RealEstate> GetFilteredData(List<RealEstateType> options)
         {
             if (dataList.Count == 0)
@@ -234,7 +262,7 @@ namespace BLL
                 return dataList;
             }
 
-            List<RealEstate> filteredList = dataList.Where(re => options.All(opt => re.Types.Contains(opt))).ToList();
+            List<RealEstate> filteredList = options != null ? dataList.Where(re => options.All(opt => re.Types.Contains(opt))).ToList() : dataList;
 
             return filteredList;
         }

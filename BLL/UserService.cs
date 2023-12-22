@@ -17,9 +17,9 @@ namespace BLL
             get { return user; }
         }
 
-        public UserService(string type) 
+        public UserService(string type, string fileName) 
         {
-            customerService = new CustomerService(type);
+            customerService = new CustomerService(type, fileName);
         }
 
         public void DefineUser(string userId)
